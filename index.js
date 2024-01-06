@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-    res.send("Hello, this is a simple Express server!");
+    res.send("Hello, this is the backend for Smart billing system!");
 });
 
 // Middleware for parsing request body
