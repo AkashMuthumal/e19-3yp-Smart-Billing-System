@@ -34,12 +34,19 @@ export async function getProductsSoldToday(request, response) {
         );
 
         // Calculate the percentage change
-        const percentageChange = calculatePercentageChange(totalSaleYesterday, totalSaleToday);
+        const percentageChange = calculatePercentageChange(
+            totalSaleYesterday,
+            totalSaleToday
+        );
 
-        response.status(200).json({ totalSaleToday, totalSaleYesterday, percentageChange });
+        response
+            .status(200)
+            .json({ totalSaleToday, totalSaleYesterday, percentageChange });
     } catch (error) {
         console.error(error.message);
-        response.status(500).json({ error: "An error occurred while fetching total sale." });
+        response
+            .status(500)
+            .json({ error: "An error occurred while fetching total sale." });
     }
 }
 
@@ -90,11 +97,9 @@ export async function getAllItemsPurchased(request, response) {
         }
     } catch (error) {
         console.log(error.message);
-        return response
-            .status(500)
-            .json({
-                error: "An error occurred while fetching purchased items.",
-            });
+        return response.status(500).json({
+            error: "An error occurred while fetching purchased items.",
+        });
     }
 }
 
@@ -119,11 +124,9 @@ export async function getItemsPurchasedById(request, response) {
         }
     } catch (error) {
         console.log(error.message);
-        return response
-            .status(500)
-            .json({
-                error: "An error occurred while fetching purchased items.",
-            });
+        return response.status(500).json({
+            error: "An error occurred while fetching purchased items.",
+        });
     }
 }
 
@@ -146,7 +149,7 @@ export async function saveNewItemsPurchased(request, response) {
             billID: request.body.billID,
             productID: request.body.productID,
             quantity: request.body.quantity,
-            unitPrice: request.body.unitPrice
+            unitPrice: request.body.unitPrice,
         };
 
         const itemPurchased = await ItemPurchased.create(newItemsPurchased);
@@ -203,40 +206,39 @@ export async function deleteItemsPurchasedById(request, response) {
                 message: `purchased item successfully deleted!`,
             });
         } else {
-            return response.status(404).json({ message: "purchased item not found." });
+            return response
+                .status(404)
+                .json({ message: "purchased item not found." });
         }
     } catch (error) {
         console.log(error.message);
         return response
             .status(500)
-            .json({ error: "An error occurred while fetching purchased items." });
+            .json({
+                error: "An error occurred while fetching purchased items.",
+            });
     }
 }
 
 export const getTotalProductQuantities = async () => {
-        try {
-            // Get the current date
-            const today = moment().startOf('day');
-    
-            // Use Mongoose aggregation to sum the total quantities
-            const result = await ItemPurchased.aggregate([
-                {
-                    $match: {
-                        createdAt: { $gte: today.toDate() },
-                    },
-                },
-                {
-                    $group: {
-                        _id: null,
-                        totalQuantity: { $sum: "$quantity" },
-                    },
-                },
-            ]);
-    
-            return result.length > 0 ? result[0].totalQuantity : 0;
-        } catch (error) {
-            console.error("Error fetching total product sold:", error);
-            throw error;
-        }
-    };
-    
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Get items purchased today
+        const itemsPurchased = await ItemPurchased.find({
+            createdAt: { $gte: today },
+        });
+
+        // Calculate the total quantity by summing the quantity field
+        const totalQuantity = itemsPurchased.reduce(
+            (total, item) => total + item.quantity,
+            0
+        );
+
+        return totalQuantity;
+    } catch (error) {
+        console.error("Error fetching total product sold:", error);
+        throw error;
+    }
+};
