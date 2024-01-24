@@ -26,11 +26,6 @@ const Sales = () => {
                             fetchURL + `bill/billCountPerDay/${day}`,
                             {
                                 method: "GET",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "Access-Control-Allow-Origin": "*", // Allow requests from any origin
-                                    // You can add other headers if needed
-                                },
                                 mode: "cors",
                             }
                         );
