@@ -22,9 +22,10 @@ const Sales = () => {
 
                 const fetchDataPromises = lastTenDays.map(async (day) => {
                     try {
-                        const response = await axios.get(
+                        const response = await fetch(
                             fetchURL + `bill/billCountPerDay/${day}`,
                             {
+                                method: "GET",
                                 headers: {
                                     "Content-Type": "application/json",
                                     "Access-Control-Allow-Origin": "*", // Allow requests from any origin
@@ -33,7 +34,15 @@ const Sales = () => {
                                 mode: "cors",
                             }
                         );
-                        return response.data.billCountSelectedDay;
+
+                        if (!response.ok) {
+                            throw new Error(
+                                `HTTP error! Status: ${response.status}`
+                            );
+                        }
+
+                        const data = await response.json();
+                        return data.billCountSelectedDay;
                     } catch (error) {
                         console.error("Error fetching data:", error);
                         throw error; // Rethrow the error to handle it outside of this function
