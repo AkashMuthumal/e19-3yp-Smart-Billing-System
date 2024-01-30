@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import "dotenv/config";
+// import "dotenv/config";
 
 // Define your MongoDB connection URI (you can use an environment variable)
 const MONGODB_URI = process.env.MONGODB_URI;
