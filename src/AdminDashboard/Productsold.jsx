@@ -21,7 +21,7 @@ const Productsold = () => {
 
                 const fetchDataPromises = lastTenDays.map(async (day) => {
                     const response = await axios.get(
-                        fetchURL + `bill/billCountPerDay/${day}`
+                        fetchURL + `itemPurchased/salesPerDay/${day}`
                     );
                     //const response = await axios.get(`http://localhost:5555/itemPurchased/salesPerDay/${day}`);
                     return response.data.totalSaleToday;
